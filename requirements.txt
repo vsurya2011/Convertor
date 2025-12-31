@@ -6,3 +6,4 @@ pdf2image
 reportlab
 python-pptx
 openpyxl
+python-docx
