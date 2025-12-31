@@ -1,0 +1,8 @@
+flask
+pdf2docx
+docx2pdf
+pillow
+pdf2image
+reportlab
+python-pptx
+openpyxl

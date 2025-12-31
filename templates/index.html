@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All-in-One Document Converter</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>📂 All-in-One Document Converter</h1>
+
+<div id="drop-area">
+  <form action="/convert" method="post" enctype="multipart/form-data" id="form">
+    <p>Drag & Drop File Here</p>
+    <p>or</p>
+    <input type="file" name="file" id="file" required>
+
+    <select name="conversion" required>
+      <option value="pdf2word">PDF ➜ Word</option>
+      <option value="word2pdf">Word ➜ PDF</option>
+      <option value="excel2pdf">Excel ➜ PDF</option>
+      <option value="image2pdf">Image ➜ PDF</option>
+      <option value="text2pdf">Text ➜ PDF</option>
+      <option value="pdf2image">PDF ➜ Image</option>
+      <option value="ppt2pdf">PPT ➜ PDF</option>
+    </select>
+
+    <button type="submit">Convert</button>
+    <p id="loading" style="display:none;">⏳ Converting…</p>
+  </form>
+</div>
+
+<script>
+document.getElementById("form").onsubmit = () => {
+  document.getElementById("loading").style.display = "block";
+};
+</script>
+
+</body>
+</html>
