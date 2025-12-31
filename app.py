@@ -1,6 +1,7 @@
-from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, send_file
+from werkzeug.utils import secure_filename
 import os
+
 from pdf2docx import Converter
 from docx2pdf import convert
 from PIL import Image
@@ -8,6 +9,7 @@ from pdf2image import convert_from_path
 from reportlab.pdfgen import canvas
 from pptx import Presentation
 import openpyxl
+from docx import Document
 
 app = Flask(__name__)
 
@@ -26,6 +28,9 @@ def convert_file():
     file = request.files['file']
     conversion = request.form['conversion']
 
+    if file.filename == "":
+        return "No file selected"
+
     safe_name = secure_filename(file.filename)
     filename, ext = os.path.splitext(safe_name)
 
@@ -37,7 +42,6 @@ def convert_file():
         output_path = os.path.abspath(
             os.path.join(OUTPUT_FOLDER, filename + ".docx")
         )
-
         cv = Converter(input_path)
         cv.convert(output_path)
         cv.close()
@@ -72,20 +76,24 @@ def convert_file():
 
     # ---------- PDF to Image ----------
     elif conversion == "pdf2image":
-        images = convert_from_path(input_path)
         output_path = os.path.abspath(
             os.path.join(OUTPUT_FOLDER, filename + ".jpg")
         )
+        images = convert_from_path(input_path)
         images[0].save(output_path, "JPEG")
-    
-elif conversion == "docx2txt":
-    from docx import Document
-    output_path = os.path.join(OUTPUT_FOLDER, filename + ".txt")
-    doc = Document(input_path)
-    with open(output_path, "w", encoding="utf-8") as f:
-        for p in doc.paragraphs:
-            f.write(p.text + "\n")
 
+    # ---------- DOCX to TXT ----------
+    elif conversion == "docx2txt":
+        output_path = os.path.abspath(
+            os.path.join(OUTPUT_FOLDER, filename + ".txt")
+        )
+        doc = Document(input_path)
+        with open(output_path, "w", encoding="utf-8") as f:
+            for p in doc.paragraphs:
+                f.write(p.text + "\n")
+
+    else:
+        return "Invalid conversion type"
 
     # ---------- SAFETY CHECK ----------
     if not os.path.exists(output_path):
